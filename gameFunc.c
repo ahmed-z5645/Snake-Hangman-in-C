@@ -9,7 +9,7 @@
 #define COLS 49
 
 void printBoard(char* board [], char* displayString){
-    printf("\"%s\" \n ", displayString);
+    printf("\"%s\" \n", displayString);
     for (int i = 0; i < ROWS; i++){
         printf("%s \n", board[i]);
         fflush(stdout);
@@ -45,6 +45,8 @@ bool movePlayer(struct player *user, char *board [], int currLetters[5][2], char
             (user->x)++;
         }
         if ((user->x >= COLS - 1) || (user->x < 1) || (user->y >= ROWS - 1) || (user->y < 1)){
+            printf("Yikes, you lost. Better luck next time i guess? \n");
+            fflush(stdout);
             return false;
         } else {
             char *copyTwo = malloc(COLS);
@@ -58,6 +60,8 @@ bool movePlayer(struct player *user, char *board [], int currLetters[5][2], char
             if (temp != ' '){
                 bool isWin = fillDisplayString(temp, displayString, hiddenString);
                 if (isWin){
+                    printf("YAY YOU WIN!! \n");
+                    fflush(stdout);
                     return false;
                 }
                 mutateBoard(board, currLetters);

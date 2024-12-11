@@ -25,7 +25,7 @@ void takeInput(struct player *user){
     }
 }
 
-bool movePlayer(struct player *user, char *board []){
+bool movePlayer(struct player *user, char *board [], int currLetters[5][2]){
     if (user->direction != 'p'){
         char *copy = malloc(COLS);
         if (copy == NULL){ return false; }
@@ -43,7 +43,7 @@ bool movePlayer(struct player *user, char *board []){
         } else {
             (user->x)++;
         }
-        if ((user->x >= COLS) || (user->x < 1) || (user->y >= ROWS) || (user->y < 1)){
+        if ((user->x >= COLS - 1) || (user->x < 1) || (user->y >= ROWS - 1) || (user->y < 1)){
             return false;
         } else {
             char *copyTwo = malloc(COLS);
@@ -53,6 +53,10 @@ bool movePlayer(struct player *user, char *board []){
 
             strcpy(copyTwo, board[user->y]);
             copyTwo[user->x] = '$';
+            char temp = board[user->y][user->x];
+            if (temp != ' '){
+                mutateBoard(board, currLetters);
+            }
             board[user->y] = copyTwo;
             return true;
         }
@@ -101,7 +105,20 @@ bool fillDisplayString(char letter, char *displayString, char *hiddenString){
     }
 }
 
-void mutateBoard(char * board []){
+void mutateBoard(char * board [], int currLetters [5][2]){
+
+    for (int i = 0; i< 5; i++){
+        char *clearLetters = malloc(COLS);
+        if (clearLetters == NULL){
+            exit(1);
+        }
+        
+        strcpy(clearLetters, board[currLetters[i][1]]);
+        clearLetters[currLetters[i][0]] = ' ';
+        board[currLetters[i][1]] = clearLetters;
+        
+    }
+
     for (int i = 0; i < 5; i++){
         char randomLetter = 'A' + (random() % 26);
         int randomX = (random() % (COLS - 2)) + 1;
@@ -122,5 +139,8 @@ void mutateBoard(char * board []){
         }
 
         board[randomY] = newLine;
+
+        currLetters[i][0] = randomX;
+        currLetters[i][1] = randomY;
     }
 }

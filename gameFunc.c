@@ -60,3 +60,67 @@ bool movePlayer(struct player *user, char *board []){
         return true;
     }
 }
+
+char *getRandomString(){
+    char *arrOfStrings [] = {
+        "I will pass my exams",
+        "Ahmed is so cool",
+        "swe is better than tron",
+        "I need to lock in",
+        "Chromakpia album of the year"
+    };
+
+    int key = rand() % 5;
+
+    return arrOfStrings[key];
+}
+
+void getDisplayString(char *displayString){
+    for (int i = 0; i < sizeof(displayString); i++){
+        if (displayString[i] != ' '){
+            displayString[i] = '_';
+        }
+    }
+}
+
+bool fillDisplayString(char letter, char *displayString, char *hiddenString){
+    int count = 0;
+    for (int i = 0; i < sizeof(displayString); i++){
+        if (letter == hiddenString[i]){
+            displayString[i] = letter;
+        }
+        if (displayString[i] != '_'){
+            count++;
+        }
+    }
+
+    if (count < (sizeof(displayString ) - 1)){
+        return false;
+    } else {
+        return true;
+    }
+}
+
+void mutateBoard(char * board []){
+    for (int i = 0; i < 5; i++){
+        char randomLetter = 'A' + (random() % 26);
+        int randomX = (random() % (COLS - 2)) + 1;
+        int randomY = (random() %(ROWS - 2)) + 1;
+
+        char *newLine = malloc(COLS);
+        if (newLine == NULL){
+            exit (1);
+        }
+
+        strcpy(newLine, board[randomY]);
+        if (newLine[randomX] != '$'){
+            newLine[randomX] = randomLetter;
+        } else if (randomX == (COLS - 1)){
+            newLine[(randomX - 1)] = randomLetter;
+        } else {
+            newLine[(randomX + 1)] = randomLetter;
+        }
+
+        board[randomY] = newLine;
+    }
+}

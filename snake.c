@@ -66,6 +66,7 @@ int main() {
     setNonCanonicalMode();
     setNonBlockingMode();
 
+    mutateBoard(board);
     bool gameRunning = true;
     while(gameRunning){
         printf("\033[H\033[J");

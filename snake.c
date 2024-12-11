@@ -69,11 +69,10 @@ int main() {
     bool gameRunning = true;
     while(gameRunning){
         printf("\033[H\033[J");
-        sleep(0.5);
         takeInput(user);
         gameRunning = movePlayer(user, board);
         printBoard(board);
-        sleep(1);
+        usleep(100000);
     }
 
     free(user);

@@ -8,7 +8,8 @@
 #define ROWS 14
 #define COLS 49
 
-void printBoard(char* board []){
+void printBoard(char* board [], char* displayString){
+    printf("\"%s\" \n ", displayString);
     for (int i = 0; i < ROWS; i++){
         printf("%s \n", board[i]);
         fflush(stdout);
@@ -25,7 +26,7 @@ void takeInput(struct player *user){
     }
 }
 
-bool movePlayer(struct player *user, char *board [], int currLetters[5][2]){
+bool movePlayer(struct player *user, char *board [], int currLetters[5][2], char *displayString, char *hiddenString){
     if (user->direction != 'p'){
         char *copy = malloc(COLS);
         if (copy == NULL){ return false; }
@@ -55,6 +56,10 @@ bool movePlayer(struct player *user, char *board [], int currLetters[5][2]){
             copyTwo[user->x] = '$';
             char temp = board[user->y][user->x];
             if (temp != ' '){
+                bool isWin = fillDisplayString(temp, displayString, hiddenString);
+                if (isWin){
+                    return false;
+                }
                 mutateBoard(board, currLetters);
             }
             board[user->y] = copyTwo;
@@ -69,9 +74,9 @@ char *getRandomString(){
     char *arrOfStrings [] = {
         "I will pass my exams",
         "Ahmed is so cool",
-        "swe is better than tron",
+        "Swe is better than tron",
         "I need to lock in",
-        "Chromakpia album of the year"
+        "Chromakopia album of the year"
     };
 
     int key = rand() % 5;
@@ -79,29 +84,33 @@ char *getRandomString(){
     return arrOfStrings[key];
 }
 
-void getDisplayString(char *displayString){
-    for (int i = 0; i < sizeof(displayString); i++){
-        if (displayString[i] != ' '){
+void getDisplayString(char displayString[], char *hiddenString){
+    for (int i = 0; i < strlen(hiddenString); i++){
+        if (hiddenString[i] != ' '){
             displayString[i] = '_';
+        } else {
+            displayString[i] = ' ';
         }
     }
+    displayString[strlen(hiddenString)] = '\0';
 }
 
 bool fillDisplayString(char letter, char *displayString, char *hiddenString){
     int count = 0;
-    for (int i = 0; i < sizeof(displayString); i++){
-        if (letter == hiddenString[i]){
+    for (int i = 0; i < strlen(displayString); i++){
+        if (letter == hiddenString[i] || letter == (hiddenString[i] - 32)){
             displayString[i] = letter;
         }
-        if (displayString[i] != '_'){
+
+        if (displayString[i] == '_'){
             count++;
         }
     }
 
-    if (count < (sizeof(displayString ) - 1)){
-        return false;
-    } else {
+    if (count == 0){
         return true;
+    } else {
+        return false;
     }
 }
 

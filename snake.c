@@ -3,6 +3,7 @@
 #include <unistd.h>
 #include <termios.h>
 #include <stdbool.h>
+#include <string.h>
 #include <time.h>
 #include <fcntl.h> // For fcntl()
 
@@ -68,20 +69,25 @@ int main() {
         currLetters[i][1] = 1;
     }
 
+    srand(time(NULL));
+    char * hiddenString = getRandomString();
+    char displayString [strlen(hiddenString)];
+    getDisplayString(displayString, hiddenString);
+
     struct termios original;
     tcgetattr(STDIN_FILENO, &original); // Save the original terminal attributes
 
     setNonCanonicalMode();
     setNonBlockingMode();
 
-    srand(time(NULL));
+    
     mutateBoard(board, currLetters);
     bool gameRunning = true;
     while(gameRunning){
         printf("\033[H\033[J");
         takeInput(user);
-        gameRunning = movePlayer(user, board, currLetters);
-        printBoard(board);
+        gameRunning = movePlayer(user, board, currLetters, displayString, hiddenString);
+        printBoard(board, displayString);
         usleep(100000);
     }
 
